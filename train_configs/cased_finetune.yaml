@@ -1,0 +1,58 @@
+model:
+  arch: emotion_llama_v2
+  model_type: pretrain
+  max_txt_len: 256
+  image_size: 224
+  end_sym: "</s>"
+  llama_model: "NousResearch/Llama-2-7b-chat-hf"
+  ckpt: null
+  low_resource: True    # loads LLaMA in 8-bit (~7GB instead of 14GB)
+  use_grad_checkpoint: True
+  chat_template: True
+  lora_r: 16
+  lora_alpha: 32
+
+datasets:
+  cased_ft:  
+    batch_size: 1
+    vis_processor:
+      train:
+        name: "blip2_image_train"
+        image_size: 224
+    text_processor:
+      train:
+        name: "blip_caption"
+    sample_ratio: 1
+
+run:
+  task: video_audio_pretrain
+  # optimizer
+  lr_sched: "linear_warmup_cosine_lr"
+  init_lr: 5e-5
+  min_lr: 1e-6
+  warmup_lr: 1e-6
+
+  weight_decay: 0.05
+  max_epoch: 30
+  num_workers: 2
+  warmup_steps: 100
+  iters_per_epoch: 3700
+  accum_grad_iters: 8
+
+  seed: 42
+  output_dir: "/home/VU-Senior/Downloads/CASED/Emotion-LLaMA-v2/checkpoints/save_checkpoint"
+
+  amp: True
+  resume_ckpt_path: null
+
+  evaluate: False 
+  train_splits: ["train"]
+
+  device: "cuda" # Set to "cuda" if GPU and drivers are available
+
+  world_size: 1
+  dist_url: "env://"
+  distributed: False
+
+  wandb_log: False
+  job_name: emotion_llama_v2_cased_finetune
