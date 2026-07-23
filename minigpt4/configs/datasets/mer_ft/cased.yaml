@@ -1,0 +1,6 @@
+datasets:
+  cased_ft:
+    data_type: images
+    build_info:
+      image_path: /home/VU-Senior/Downloads/CASED/development_data/student_only/train
+      ann_path: /home/VU-Senior/Downloads/CASED/development_data/train_split.csv
