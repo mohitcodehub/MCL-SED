@@ -63,16 +63,33 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 torchrun --nproc_per_node 4 train.py --cfg-path tra
 
 ## 🔍 Inference & Evaluation
 
-To evaluate model performance on the validation split or custom test datasets:
-
-1. Configure the model checkpoint directory in your evaluation YAML config (e.g., `eval_configs/emotionllamav2_mer_evaluation.yaml`).
-2. Execute the evaluation script:
+### 1. Compute Validation Metrics
+To evaluate model performance (F1, MCC, CCC, RMSE, etc.) on the CASED validation split:
 ```bash
 export PYTHONPATH=$PYTHONPATH:.
-CUDA_VISIBLE_DEVICES=0 torchrun --nproc_per_node 1 evaluate_llama_metrics.py --cfg-path eval_configs/emotionllamav2_mer_evaluation.yaml
+CUDA_VISIBLE_DEVICES=0 python evaluate_llama_metrics.py \
+  --cfg-path train_configs/cased_finetune.yaml \
+  --ckpt /path/to/checkpoint_best.pth \
+  --eval-csv /path/to/val_split.csv \
+  --video-dir /path/to/validation_videos \
+  --features-dir /path/to/extracted_features
 ```
 
-3. To predict on a single sample:
+### 2. Generate Leaderboard Submission
+To run inference on the test set and generate a submission CSV:
+```bash
+export PYTHONPATH=$PYTHONPATH:.
+CUDA_VISIBLE_DEVICES=0 python run_inference_cased.py \
+  --cfg-path train_configs/cased_finetune.yaml \
+  --ckpt /path/to/checkpoint_best.pth \
+  --template-csv /path/to/submission_template.csv \
+  --output-csv /path/to/save/submission.csv \
+  --test-video-dir /path/to/test_videos \
+  --test-features-dir /path/to/extracted_features
+```
+
+### 3. Single-Sample Inference
+To run a prediction on a single test sample:
 ```bash
 python inference.py
 ```
