@@ -36,14 +36,16 @@ Download the following baseline checkpoints and place them in your model workspa
 ---
 
 ## 📊 Feature Extraction
-To run training efficiently without hitting out-of-memory (OOM) errors, extract temporal and visual features beforehand:
+To run training and inference efficiently without hitting GPU out-of-memory (OOM) errors, extract visual and acoustic features beforehand:
 
 ```bash
-# Extract acoustic features using Whisper-Large-v3
-python my_utils/extract_features.py extract_whisper_audio_features [dataset_name]
+# For development/training set (CASED)
+python my_utils/extract_features.py extract_whisper_audio_features CASED
+python my_utils/extract_features.py extract_eva_vit_g_features CASED
 
-# Extract spatiotemporal features using EVA-ViT-G
-python my_utils/extract_features.py extract_eva_vit_g_features [dataset_name]
+# For evaluation/test set (CASED_test)
+python my_utils/extract_features.py extract_whisper_audio_features CASED_test
+python my_utils/extract_features.py extract_eva_vit_g_features CASED_test
 ```
 
 ---
@@ -89,21 +91,47 @@ CUDA_VISIBLE_DEVICES=0 python run_inference_cased.py \
 ```
 
 ### 3. Single-Sample Inference
-To run a prediction on a single test sample:
+To run an interactive prediction on a single sample:
 ```bash
-python inference.py
+python inference.py --cfg-path train_configs/cased_finetune.yaml --ckpt /path/to/checkpoint_best.pth
 ```
 
 ---
 
 ## 📖 Citation
-If you find our work helpful for your research, please cite our paper:
+If you find our work helpful for your research, please cite our paper as well as the base Emotion-LLaMA frameworks:
+
 ```bibtex
-@inproceedings{mcl_sed_icmi2026,
-  author    = {Mohit Bansal and Arnold Sachith A Hans and Smitha Rao},
+@inproceedings{10.1145/3776574.3832487,
+  author    = {Bansal, Mohit and Hans, Arnold Sachith A and Rao, Smitha},
   title     = {MCL-SED: A Multimodal CASED-LLaMA Framework for Student Engagement Detection in Virtual Classroom},
-  booktitle = {Proceedings of the ACM International Conference on Multimodal Interaction (ICMI)},
-  year      = {2026}
+  booktitle = {Proceedings of the International Conference on Multimodal Interaction},
+  series    = {ICMI '26},
+  year      = {2026},
+  isbn      = {979-8-4007-2318-6},
+  publisher = {Association for Computing Machinery},
+  address   = {New York, NY, USA},
+  doi       = {10.1145/3776574.3832487},
+  location  = {Napoli, Italy},
+  pages     = {1--10}
+}
+
+@inproceedings{NEURIPS2024_c7f43ada,
+  author    = {Cheng, Zebang and Cheng, Zhi-Qi and He, Jun-Yan and Wang, Kai and Lin, Yuxiang and Lian, Zheng and Peng, Xiaojiang and Hauptmann, Alexander},
+  title     = {Emotion-LLaMA: Multimodal Emotion Recognition and Reasoning with Instruction Tuning},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {37},
+  pages     = {110805--110853},
+  year      = {2024}
+}
+
+@inproceedings{10.1145/3689092.3689404,
+  author    = {Cheng, Zebang and Tu, Shuyuan and Huang, Dawei and Li, Minghan and Peng, Xiaojiang and Cheng, Zhi-Qi and Hauptmann, Alexander G.},
+  title     = {SZTU-CMU at MER2024: Improving Emotion-LLaMA with Conv-Attention for Multimodal Emotion Recognition},
+  booktitle = {Proceedings of the 2nd International Workshop on Multimodal and Responsible Affective Computing (MRAC '24)},
+  pages     = {78--87},
+  year      = {2024},
+  doi       = {10.1145/3689092.3689404}
 }
 ```
 
